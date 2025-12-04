@@ -19,7 +19,6 @@ public class ConsumerService {
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void receiveMessage(String message) {
-        String resultado = "ERRO";
         System.out.println("==================================================");
         System.out.println("  MENSAGEM RECEBIDA");
         System.out.println("==================================================");
