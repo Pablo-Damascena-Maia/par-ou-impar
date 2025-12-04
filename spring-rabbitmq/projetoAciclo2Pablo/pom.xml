@@ -20,9 +20,10 @@
 
 	<dependencies>
 		<!-- Spring Boot Starter Web para endpoint de teste -->
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+			</dependency>
 
 		<!-- Spring Boot Starter AMQP para RabbitMQ -->
 		<dependency>
