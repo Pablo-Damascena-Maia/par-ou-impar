@@ -1,6 +1,8 @@
 package com.pablo.projetoBciclo2Pablo;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -8,8 +10,16 @@ import java.time.LocalDateTime;
 @Service
 public class ConsumerService {
 
+    private final RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    public ConsumerService(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void receiveMessage(String message) {
+        String resultado = "ERRO";
         System.out.println("==================================================");
         System.out.println("  MENSAGEM RECEBIDA");
         System.out.println("==================================================");
@@ -36,6 +46,17 @@ public class ConsumerService {
             
             System.out.println("  Número Processado: " + numero);
             System.out.println("  Resultado: " + resultado);
+
+            // 4. Enviar o resultado para a fila de resultados
+            String resultadoMessage = String.format(
+                    "{\"numero\": %d, \"resultado\": \"%s\", \"timestamp_processamento\": \"%s\"}",
+                    numero,
+                    resultado,
+                    LocalDateTime.now().toString()
+            );
+            
+            rabbitTemplate.convertAndSend(RabbitMQConfig.RESULT_QUEUE_NAME, resultadoMessage);
+            System.out.println("  Resultado enviado para a fila: " + RabbitMQConfig.RESULT_QUEUE_NAME);
             
         } catch (Exception e) {
             System.err.println("  Erro ao processar mensagem: " + e.getMessage());
