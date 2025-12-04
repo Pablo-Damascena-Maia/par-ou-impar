@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    networks:
+      - microservices
+
+  producer:
+    build: ./producer
+    container_name: producer
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin
+    networks:
+      - microservices
+
+  consumer:
+    build: ./consumer
+    container_name: consumer
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin
+    networks:
+      - microservices
+
+networks:
+  microservices:
+    driver: bridge
