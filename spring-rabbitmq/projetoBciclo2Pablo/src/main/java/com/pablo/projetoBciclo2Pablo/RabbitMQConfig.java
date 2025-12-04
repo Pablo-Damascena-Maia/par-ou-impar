@@ -7,19 +7,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String RESULT_QUEUE_NAME = "provac2Pablo.resultado";
+    // Fila única de comunicação (entrada e saída)
 
-    public static final String QUEUE_NAME = "provac2Pablo";
+    public static final String QUEUE_NAME = "provac2Pablo.resultado";
 
     @Bean
     public Queue queue() {
-        // Fila de entrada (Produtor -> Consumidor)
+        // Fila única de comunicação
         return new Queue(QUEUE_NAME, true); // durable = true
-    }
-
-    @Bean
-    public Queue resultQueue() {
-        // Fila de saída (Consumidor -> Outro Serviço)
-        return new Queue(RESULT_QUEUE_NAME, true); // durable = true
     }
 }
